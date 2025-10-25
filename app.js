@@ -52,6 +52,7 @@ class AppState {
   updateFiltered() {
     try {
       let filtered = [...this.allWords];
+      console.log(`Filter: "${this.activeFilter}", Total words: ${filtered.length}`);
       
       // Apply favorites filter
       if (this.showFavoritesOnly) {
@@ -63,12 +64,12 @@ class AppState {
         if (this.activeFilter === 'favorites') {
           filtered = filtered.filter(w => w.isFavorite);
         } else {
-          filtered = filtered.filter(w => w.type === this.activeFilter);
+          filtered = filtered.filter(w => w.type && w.type.toLowerCase() === this.activeFilter.toLowerCase());
         }
       }
       
       this.filtered = filtered;
-      console.log(`🔍 Filtered: ${filtered.length} words (filter: ${this.activeFilter})`);
+      console.log(`🔍 Result: ${filtered.length} words`);
     } catch (error) {
       console.error('Error updating filtered words:', error);
       this.filtered = [...this.allWords];
@@ -921,17 +922,15 @@ class GermanLearningApp {
    * Load settings from localStorage
    */
   loadSettings() {
-    const settings = Utils.safeJsonParse(
-      Utils.safeStorage.getItem(CONFIG.STORAGE_KEYS.SETTINGS), 
-      {}
-    );
+    const settingsStr = Utils.safeStorage.getItem(CONFIG.STORAGE_KEYS.SETTINGS);
+    const settings = settingsStr ? Utils.safeJsonParse(settingsStr, {}) : {};
 
-    if (settings.hideTranslation !== undefined) {
+    if (settings && settings.hideTranslation !== undefined) {
       this.state.hideTranslation = settings.hideTranslation;
       this.updateHideTranslationButton();
     }
 
-    if (settings.showFavoritesOnly !== undefined) {
+    if (settings && settings.showFavoritesOnly !== undefined) {
       this.state.showFavoritesOnly = settings.showFavoritesOnly;
       this.updateFavoritesButton();
     }
@@ -963,18 +962,15 @@ class GermanLearningApp {
       console.warn('❌ Search input not found');
     }
 
-    // Filter tabs with ARIA support
+    // Filter tabs with ARIA support - DIRECT METHOD
     const filterTabs = document.querySelectorAll('.filter-tab');
     console.log(`Found ${filterTabs.length} filter tabs`);
     filterTabs.forEach((tab, index) => {
-      this.state.addEventListener(tab, 'click', (e) => this.handleFilterClick(e));
-      this.state.addEventListener(tab, 'keydown', (e) => {
-        if (e.key === 'Enter' || e.key === ' ') {
-          e.preventDefault();
-          this.handleFilterClick(e);
-        }
-      });
-      console.log(`✓ Filter tab ${index + 1} listeners attached`);
+      tab.onclick = (e) => {
+        console.log('Filter tab clicked:', tab.dataset.filter);
+        this.handleFilterClick(e);
+      };
+      console.log(`✓ Filter tab ${index + 1} (${tab.dataset.filter}) attached`);
     });
 
     // Control buttons
@@ -1107,38 +1103,37 @@ class GermanLearningApp {
       'searchImage': () => this.searchForImage(),
       'saveImage': () => this.saveImage(),
       'cancelImage': () => this.closeImageModal(),
-      'closeImageModal': () => this.closeImageModal()
+      'closeImageModal': () => this.closeImageModal(),
+      'pasteUrl': () => this.pasteImageUrl()
     };
 
-    // Attach event listeners to buttons
+    // Attach event listeners to buttons - SIMPLE DIRECT METHOD
     Object.entries(buttonHandlers).forEach(([id, handler]) => {
       const element = document.getElementById(id);
       if (element) {
-        // Remove any existing listeners by cloning
-        const newElement = element.cloneNode(true);
-        element.parentNode.replaceChild(newElement, element);
-        
-        // Create a new handler that prevents default behavior
-        const clickHandler = (e) => {
+        element.onclick = (e) => {
+          console.log(`Button clicked: ${id}`);
           e.preventDefault();
           e.stopPropagation();
           try {
             handler();
           } catch (error) {
-            console.error(`Error in ${id} handler:`, error);
-            this.showToast('حدث خطأ في تنفيذ العملية', 'error');
+            console.error(`Error in ${id}:`, error);
+            this.showToast('حدث خطأ', 'error');
           }
         };
-        
-        // Add new listener
-        newElement.addEventListener('click', clickHandler);
-        console.log(`✓ ${id}`);
+        console.log(`✓ ${id} button attached`);
       } else {
-        console.warn(`❌ ${id}`);
+        console.warn(`❌ ${id} button NOT FOUND`);
       }
     });
     
     console.log('✅ Control buttons setup completed');
+    
+    // Test settings button specifically
+    const settingsBtn = document.getElementById('settings-toggle');
+    console.log('Settings button element:', settingsBtn);
+    console.log('Settings button onclick:', settingsBtn ? settingsBtn.onclick : 'null');
   }
 
   /**
@@ -1238,43 +1233,12 @@ class GermanLearningApp {
       return;
     }
 
-    // Close modal events - using the same approach as control buttons
-    const modalButtons = {
-      'closeImageModal': () => this.closeImageModal(),
-      'cancelImage': () => this.closeImageModal(),
-      'saveImage': () => this.saveImage(),
-      'searchImage': () => this.searchForImage(),
-      'pasteUrl': () => this.pasteImageUrl()
-    };
-
-    Object.entries(modalButtons).forEach(([id, handler]) => {
-      const element = document.getElementById(id);
-      if (element) {
-        // Remove existing listeners by cloning
-        const newElement = element.cloneNode(true);
-        element.parentNode.replaceChild(newElement, element);
-        
-        newElement.addEventListener('click', (e) => {
-          e.preventDefault();
-          e.stopPropagation();
-          try {
-            handler();
-          } catch (error) {
-            console.error(`Error in ${id}:`, error);
-          }
-        });
-        console.log(`✓ ${id}`);
-      } else {
-        console.warn(`❌ ${id}`);
-      }
-    });
-
     // Close modal when clicking outside
-    modal.addEventListener('click', (e) => {
+    modal.onclick = (e) => {
       if (e.target === modal) {
         this.closeImageModal();
       }
-    });
+    };
 
     // Close modal with Escape key
     document.addEventListener('keydown', (e) => {

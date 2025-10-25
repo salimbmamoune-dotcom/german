@@ -1,280 +1,145 @@
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>تعلّم كلمات ألمانية — مُحسّن</title>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>تعلم كلمات ألمانية</title>
+  <link rel="icon" href="fv.png">
   <link rel="stylesheet" href="styles.css">
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
 </head>
 <body>
   <div class="app" id="app">
-    <!-- Navigation Header -->
-    <nav class="navbar" role="navigation" aria-label="التنقل الرئيسي">
+    <nav class="navbar">
       <div class="navbar-brand">
         <div class="brand-icon">📚</div>
         <div class="brand-text">
-          <h1>تعلّم كلمات ألمانية</h1>
-          <span class="brand-subtitle">كل يوم 30 كلمة — تُحسب أوتوماتيكياً</span>
+          <h1>تعلم كلمات ألمانية</h1>
         </div>
       </div>
       
       <div class="navbar-actions">
         <div class="search-container">
-          <div class="search-input-wrapper">
-            <input 
-              id="search" 
-              placeholder="ابحث عن كلمة ألمانية أو عربية..." 
-              class="search-input"
-              aria-label="البحث في الكلمات"
-            />
-            <div class="search-icon">🔍</div>
-          </div>
+          <input id="search" placeholder="ابحث..." class="search-input">
         </div>
         
-        <div class="action-buttons">
-          <button id="btn-import" class="btn btn-primary" aria-label="استيراد ملف JSON">
-            <span class="btn-icon">📥</span>
-            <span class="btn-text">استيراد</span>
-          </button>
-          <button id="btn-export" class="btn btn-secondary" aria-label="تصدير البيانات">
-            <span class="btn-icon">💾</span>
-            <span class="btn-text">تصدير</span>
-          </button>
-          <button id="btn-export-filtered" class="btn btn-outline" aria-label="تصدير المفلترة">
-            <span class="btn-icon">📤</span>
-            <span class="btn-text">مفلتر</span>
-          </button>
-        </div>
-        
-        <div class="settings-toggle">
-          <button id="settings-toggle" class="btn btn-ghost" aria-label="الإعدادات">
-            <span class="btn-icon">⚙️</span>
-          </button>
-        </div>
+        <button id="btn-import" class="btn btn-primary">📥 استيراد</button>
+        <button id="btn-export" class="btn btn-secondary">💾 تصدير</button>
+        <button id="btn-export-filtered" class="btn btn-outline">📤 مفلتر</button>
+        <button id="settings-toggle" class="btn btn-ghost">⚙️</button>
       </div>
     </nav>
 
-    <!-- Main Content Area -->
     <div class="main-container">
-      <!-- Sidebar -->
-      <aside class="sidebar" id="sidebar" role="complementary" aria-label="قائمة الأيام">
+      <aside class="sidebar" id="sidebar">
         <div class="sidebar-header">
           <h2>اليوميات</h2>
-          <button id="toggle-sidebar" class="sidebar-toggle" aria-label="تبديل القائمة">
-            <span class="toggle-icon">☰</span>
-          </button>
         </div>
-        
-        <div class="sidebar-content">
-          <div class="days-list" id="days-list" role="tablist" aria-label="قائمة الأيام"></div>
-        </div>
+        <div class="days-list" id="days-list"></div>
       </aside>
 
-      <!-- Main Content -->
-      <main class="content" id="main-content" role="main" aria-label="المحتوى الرئيسي">
-        <!-- Progress Section -->
-        <section class="progress-section" aria-label="تقدم التعلم">
-          <div class="progress-header">
-            <h2>تقدمك في التعلم</h2>
-            <div class="progress-stats">
-              <span class="stat-item">
-                <span class="stat-number" id="totalWords">0</span>
-                <span class="stat-label">كلمة</span>
-              </span>
-            </div>
-          </div>
-          
-          <div class="progress-bar-container">
-            <div class="progress-bar" id="progressBar" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100">
-              <div class="progress-fill"></div>
-              <span class="progress-text">0%</span>
-            </div>
-          </div>
-          
+      <main class="content" id="main-content">
+        <section class="progress-section">
+          <h2>تقدمك</h2>
           <div class="stats-grid">
             <div class="stat-card">
-              <div class="stat-icon">✅</div>
-              <div class="stat-content">
-                <div class="stat-value" id="learnedCount">0</div>
-                <div class="stat-label">تعلمت</div>
-              </div>
+              <div class="stat-value" id="totalWords">0</div>
+              <div class="stat-label">كلمة</div>
             </div>
             <div class="stat-card">
-              <div class="stat-icon">⏳</div>
-              <div class="stat-content">
-                <div class="stat-value" id="remainingCount">0</div>
-                <div class="stat-label">متبقي</div>
-              </div>
+              <div class="stat-value" id="learnedCount">0</div>
+              <div class="stat-label">تعلمت</div>
             </div>
             <div class="stat-card">
-              <div class="stat-icon">🖼️</div>
-              <div class="stat-content">
-                <div class="stat-value" id="imagesCount">0</div>
-                <div class="stat-label">صور</div>
-              </div>
+              <div class="stat-value" id="remainingCount">0</div>
+              <div class="stat-label">متبقي</div>
             </div>
             <div class="stat-card">
-              <div class="stat-icon">⭐</div>
-              <div class="stat-content">
-                <div class="stat-value" id="favoritesCount">0</div>
-                <div class="stat-label">مفضلة</div>
-              </div>
+              <div class="stat-value" id="imagesCount">0</div>
+              <div class="stat-label">صور</div>
             </div>
+            <div class="stat-card">
+              <div class="stat-value" id="favoritesCount">0</div>
+              <div class="stat-label">مفضلة</div>
+            </div>
+          </div>
+          <div class="progress-bar" id="progressBar"></div>
+        </section>
+
+        <section class="filter-section">
+          <div class="filter-tabs">
+            <button class="filter-tab active" data-filter="all">📚 الكل</button>
+            <button class="filter-tab" data-filter="nomen">🏷️ أسماء</button>
+            <button class="filter-tab" data-filter="verb">🏃 أفعال</button>
+            <button class="filter-tab" data-filter="adjektiv">🎨 صفات</button>
+            <button class="filter-tab" data-filter="redewendung">💬 تعبيرات</button>
+            <button class="filter-tab" data-filter="favorites">⭐ المفضلة</button>
           </div>
         </section>
 
-        <!-- Filter Tabs -->
-        <section class="filter-section" aria-label="تصفية الكلمات">
-          <div class="filter-tabs" role="tablist" aria-label="تصفية الكلمات">
-            <button class="filter-tab active" data-filter="all" role="tab" aria-selected="true">
-              <span class="tab-icon">📚</span>
-              <span class="tab-text">الكل</span>
-            </button>
-            <button class="filter-tab" data-filter="nomen" role="tab" aria-selected="false">
-              <span class="tab-icon">🏷️</span>
-              <span class="tab-text">أسماء</span>
-            </button>
-            <button class="filter-tab" data-filter="verb" role="tab" aria-selected="false">
-              <span class="tab-icon">🏃</span>
-              <span class="tab-text">أفعال</span>
-            </button>
-            <button class="filter-tab" data-filter="adjektiv" role="tab" aria-selected="false">
-              <span class="tab-icon">🎨</span>
-              <span class="tab-text">صفات</span>
-            </button>
-            <button class="filter-tab" data-filter="redewendung" role="tab" aria-selected="false">
-              <span class="tab-icon">💬</span>
-              <span class="tab-text">تعبيرات</span>
-            </button>
-            <button class="filter-tab" data-filter="favorites" role="tab" aria-selected="false">
-              <span class="tab-icon">⭐</span>
-              <span class="tab-text">المفضلة</span>
-            </button>
-          </div>
-        </section>
-
-        <!-- Words Section -->
-        <section class="words-section" aria-label="كلمات اليوم">
+        <section class="words-section">
           <div class="section-header">
-            <h2 id="dayTitle" class="section-title">اليوم 1 — 30 كلمة</h2>
+            <h2 id="dayTitle">اليوم 1</h2>
             <div class="section-actions">
-              <button id="bulk-mark-learned" class="btn btn-success btn-sm" aria-label="تعليم جميع كلمات اليوم">
-                <span class="btn-icon">✅</span>
-                <span class="btn-text">تعليم الكل</span>
-              </button>
-              <button id="bulk-add-favorites" class="btn btn-warning btn-sm" aria-label="إضافة جميع كلمات اليوم للمفضلة">
-                <span class="btn-icon">⭐</span>
-                <span class="btn-text">مفضلة الكل</span>
-              </button>
-              <button id="clear-learned" class="btn btn-danger btn-sm" aria-label="إعادة تعيين الكلمات المتعلمة">
-                <span class="btn-icon">🔄</span>
-                <span class="btn-text">إعادة تعيين</span>
-              </button>
+              <button id="bulk-mark-learned" class="btn btn-success btn-sm">✅ تعليم الكل</button>
+              <button id="bulk-add-favorites" class="btn btn-warning btn-sm">⭐ مفضلة الكل</button>
+              <button id="clear-learned" class="btn btn-danger btn-sm">🔄 إعادة تعيين</button>
             </div>
           </div>
           
-          <div class="words-container">
-            <div id="wordCards" class="word-cards-grid" role="grid" aria-label="كلمات اليوم"></div>
-            <button id="loadMore" class="btn btn-primary load-more" style="display:none" aria-label="تحميل المزيد من الكلمات">
-              <span class="btn-icon">⬇️</span>
-              <span class="btn-text">تحميل المزيد</span>
-            </button>
-            <div id="empty" class="empty-state" style="display:none" role="status" aria-live="polite">
-              <div class="empty-icon">📝</div>
-              <div class="empty-text">لا توجد كلمات مطابقة</div>
-              <div class="empty-subtext">جرب تغيير الفلتر أو البحث عن كلمات أخرى</div>
-            </div>
-          </div>
+          <div id="wordCards" class="word-cards-grid"></div>
+          <button id="loadMore" class="btn btn-primary load-more" style="display:none">⬇️ تحميل المزيد</button>
+          <div id="empty" class="empty-state" style="display:none">لا توجد كلمات</div>
         </section>
       </main>
     </div>
 
-    <!-- Settings Panel -->
-    <div class="settings-panel" id="settings-panel" role="dialog" aria-labelledby="settings-title" aria-hidden="true">
+    <div class="settings-panel" id="settings-panel">
       <div class="settings-header">
         <h3 id="settings-title">الإعدادات</h3>
-        <button id="close-settings" class="btn btn-ghost btn-sm" aria-label="إغلاق الإعدادات">
-          <span class="btn-icon">✕</span>
-        </button>
+        <button id="close-settings" class="btn btn-ghost btn-sm">✕</button>
       </div>
 
       <div class="settings-content">
         <div class="setting-group">
           <h4>المظهر</h4>
-          <div class="setting-item">
-            <button id="toggle-dark" class="btn btn-outline" aria-label="تبديل الوضع المظلم">
-              <span class="btn-icon">🌙</span>
-              <span class="btn-text">الوضع المظلم</span>
-            </button>
-          </div>
+          <button id="toggle-dark" class="btn btn-outline">🌙 الوضع المظلم</button>
         </div>
         
         <div class="setting-group">
           <h4>الصوت</h4>
-          <div class="setting-item">
-            <button id="toggle-tts" class="btn btn-outline" aria-label="تبديل نوع النطق">
-              <span class="btn-icon">🔊</span>
-              <span class="btn-text">TTS: خارجي</span>
-            </button>
-          </div>
+          <button id="toggle-tts" class="btn btn-outline">🔊 TTS</button>
         </div>
         
         <div class="setting-group">
           <h4>العرض</h4>
-          <div class="setting-item">
-            <button id="toggle-favorites" class="btn btn-outline" aria-label="عرض المفضلة فقط">
-              <span class="btn-icon">⭐</span>
-              <span class="btn-text">المفضلة فقط</span>
-            </button>
-          </div>
-          <div class="setting-item">
-            <button id="toggle-hide-translation" class="btn btn-outline" aria-label="إخفاء/إظهار الترجمة">
-              <span class="btn-icon">👁️</span>
-              <span class="btn-text">إخفاء الترجمة</span>
-            </button>
-          </div>
+          <button id="toggle-favorites" class="btn btn-outline">⭐ المفضلة فقط</button>
+          <button id="toggle-hide-translation" class="btn btn-outline">👁️ إخفاء الترجمة</button>
         </div>
         
         <div class="setting-group">
           <h4>الصور</h4>
-          <div class="setting-item">
-            <button id="btn-add-image" class="btn btn-outline" aria-label="إضافة صورة">
-              <span class="btn-icon">🖼️</span>
-              <span class="btn-text">إضافة صورة</span>
-            </button>
-          </div>
+          <button id="btn-add-image" class="btn btn-outline">🖼️ إضافة صورة</button>
         </div>
       </div>
     </div>
 
-    <!-- Modal for adding/editing image -->
-    <div class="modal" id="imageModal" role="dialog" aria-labelledby="imageModalTitle" aria-hidden="true">
+    <div class="modal" id="imageModal">
       <div class="modal-content">
         <div class="modal-header">
-          <h3 class="modal-title" id="imageModalTitle">إضافة صورة للكلمة</h3>
-          <button class="modal-close" id="closeImageModal" aria-label="إغلاق النافذة">&times;</button>
+          <h3 id="imageModalTitle">إضافة صورة</h3>
+          <button class="modal-close" id="closeImageModal">&times;</button>
         </div>
         <div class="modal-body">
-          <div class="modal-field">
-            <label for="imageUrl" class="modal-label">رابط الصورة:</label>
-            <div class="modal-search-group">
-              <input type="text" id="imageUrl" class="modal-input" placeholder="أدخل رابط الصورة هنا..." aria-describedby="imageUrlHelp" />
-              <button id="pasteUrl" class="modal-btn secondary">لصق</button>
-            </div>
-            <div id="imageUrlHelp" class="modal-help">يمكنك استخدام روابط مباشرة للصور أو روابط من DuckDuckGo</div>
-          </div>
-          <div class="modal-field">
-            <label for="imageSearch" class="modal-label">البحث عن صورة:</label>
-            <div class="modal-search-group">
-              <input type="text" id="imageSearch" class="modal-input" placeholder="ابحث عن صورة للكلمة..." />
-              <button id="searchImage" class="modal-btn secondary">بحث</button>
-            </div>
-          </div>
+          <label for="imageUrl">رابط الصورة:</label>
+          <input type="text" id="imageUrl" class="modal-input" placeholder="أدخل رابط الصورة">
+          <button id="pasteUrl" class="modal-btn secondary">لصق</button>
+          
+          <label for="imageSearch">البحث:</label>
+          <input type="text" id="imageSearch" class="modal-input" placeholder="ابحث عن صورة">
+          <button id="searchImage" class="modal-btn secondary">بحث</button>
+          
           <div id="imagePreview" class="modal-preview">
-            <img id="previewImg" src="" alt="معاينة الصورة" />
+            <img id="previewImg" src="" alt="معاينة">
           </div>
         </div>
         <div class="modal-actions">
@@ -284,76 +149,9 @@
       </div>
     </div>
 
-    <!-- Toast Notification -->
-    <div id="toast" class="toast" role="status" aria-live="polite" aria-atomic="true"></div>
+    <div id="toast" class="toast"></div>
   </div>
 
-  <script src="./app.js?v=15"></script>
-
-  <style>
-    /* Modal inline styles for immediate fixes */
-    .modal-field {
-      margin-bottom: 1rem;
-    }
-    
-    .modal-label {
-      display: block;
-      margin-bottom: 0.5rem;
-      font-weight: 700;
-      color: var(--text-primary);
-    }
-    
-    .modal-help {
-      font-size: 0.8rem;
-      color: var(--text-muted);
-      margin-top: 0.25rem;
-    }
-    
-    .modal-search-group {
-      display: flex;
-      gap: 0.5rem;
-    }
-    
-    .modal-search-group .modal-input {
-      flex: 1;
-    }
-    
-    .modal-preview {
-      text-align: center;
-      margin-top: 1rem;
-      display: none;
-    }
-    
-    .modal-preview img {
-      max-width: 100%;
-      max-height: 200px;
-      border-radius: 0.5rem;
-    }
-    
-    /* Ensure proper RTL layout */
-    .modal-content {
-      text-align: right;
-    }
-    
-    .modal-actions {
-      justify-content: flex-start;
-    }
-    
-    /* Error buttons styling */
-    .btn-danger {
-      background-color: #dc3545;
-      color: white;
-      border: none;
-    }
-    
-    .btn-danger:hover {
-      background-color: #c82333;
-    }
-    
-    .image-placeholder {
-      padding: 1rem;
-      text-align: center;
-    }
-  </style>
+  <script src="./app.js?v=16"></script>
 </body>
 </html>

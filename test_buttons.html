@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>Test Buttons</title>
+</head>
+<body>
+  <h1>اختبار الأزرار</h1>
+  
+  <button id="btn-import">استيراد</button>
+  <button id="btn-export">تصدير</button>
+  <button id="settings-toggle">الإعدادات</button>
+  
+  <div id="result"></div>
+  
+  <script>
+    // Test simple onclick
+    document.getElementById('btn-import').onclick = function() {
+      document.getElementById('result').innerHTML = 'Import clicked!';
+      console.log('Import button works!');
+    };
+    
+    document.getElementById('btn-export').onclick = function() {
+      document.getElementById('result').innerHTML = 'Export clicked!';
+      console.log('Export button works!');
+    };
+    
+    document.getElementById('settings-toggle').onclick = function() {
+      document.getElementById('result').innerHTML = 'Settings clicked!';
+      console.log('Settings button works!');
+    };
+    
+    console.log('Test page loaded successfully');
+  </script>
+</body>
+</html>
