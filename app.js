@@ -913,6 +913,7 @@ class GermanLearningApp {
       arabic: (word.arabic || '').trim(),
       type: Utils.normalizeType(type),
       image_url: word.image_url || '',
+      example: word.example || '',
       isLearned: !!word.isLearned,
       isFavorite: !!word.isFavorite
     };
@@ -1954,11 +1955,21 @@ class GermanLearningApp {
     arabic.className = 'arabic-translation' + (this.state.hideTranslation ? ' hidden' : '');
     arabic.textContent = word.arabic || '';
 
+    // Example sentence
+    const exampleDiv = document.createElement('div');
+    exampleDiv.className = 'example-sentence';
+    if (word.example && word.example.trim()) {
+      exampleDiv.innerHTML = `<span class="example-label">💬 مثال:</span> ${word.example}`;
+    }
+
     const imageContainer = this.createImageContainer(word);
     const controls = this.createCardControls(word, card, arabic);
 
     card.appendChild(header);
     card.appendChild(arabic);
+    if (word.example && word.example.trim()) {
+      card.appendChild(exampleDiv);
+    }
     card.appendChild(imageContainer);
     card.appendChild(controls);
 
@@ -2225,12 +2236,14 @@ class GermanLearningApp {
     const title = document.getElementById('imageModalTitle');
     const urlInput = document.getElementById('imageUrl');
     const searchInput = document.getElementById('imageSearch');
+    const exampleInput = document.getElementById('exampleSentence');
     
     if (!modal || !title || !urlInput || !searchInput) return;
     
     title.textContent = `إضافة صورة للكلمة: ${word.german}`;
     urlInput.value = word.image_url || '';
     searchInput.value = word.german;
+    if (exampleInput) exampleInput.value = word.example || '';
     
     // Add real-time preview
     urlInput.addEventListener('input', (e) => {
@@ -2320,9 +2333,11 @@ class GermanLearningApp {
     if (!this.state.currentEditingWord) return;
     
     const urlInput = document.getElementById('imageUrl');
+    const exampleInput = document.getElementById('exampleSentence');
     if (!urlInput) return;
     
     const imageUrl = urlInput.value.trim();
+    const exampleText = exampleInput ? exampleInput.value.trim() : '';
     
     if (!imageUrl) {
       this.showToast('يرجى إدخال رابط صورة', 'warning');
@@ -2337,13 +2352,15 @@ class GermanLearningApp {
     }
     
     console.log('Saving image URL:', sanitizedUrl);
+    console.log('Saving example:', exampleText);
     
-    // Save directly without extensive validation
+    // Save image and example
     this.state.currentEditingWord.image_url = sanitizedUrl;
+    this.state.currentEditingWord.example = exampleText;
     this.saveState();
     this.updateStats();
     this.render(); // Re-render everything to show the image
-    this.showToast('تم حفظ الصورة بنجاح ✓', 'success');
+    this.showToast('تم حفظ الصورة والمثال بنجاح ✓', 'success');
     this.closeImageModal();
   }
 

@@ -793,6 +793,24 @@ body {
   overflow: hidden;
 }
 
+.example-sentence {
+  font-size: var(--font-size-sm);
+  color: var(--text-secondary);
+  background: var(--bg-tertiary);
+  padding: var(--space-2) var(--space-3);
+  border-radius: var(--radius);
+  margin-bottom: var(--space-3);
+  line-height: 1.5;
+  border-right: 3px solid var(--primary);
+  font-style: italic;
+}
+
+.example-label {
+  color: var(--text-muted);
+  font-size: 0.85rem;
+  font-weight: 600;
+}
+
 /* Card Image */
 .card-image {
   width: 100%;
@@ -1147,12 +1165,19 @@ body {
   font-size: var(--font-size-sm);
   transition: var(--transition);
   margin-bottom: var(--space-3);
+  font-family: var(--font-family);
+  resize: vertical;
 }
 
 .modal-input:focus {
   outline: none;
   border-color: var(--primary);
   box-shadow: 0 0 0 3px rgb(59 130 246 / 0.1);
+}
+
+textarea.modal-input {
+  min-height: 80px;
+  line-height: 1.5;
 }
 
 .modal-actions { 
